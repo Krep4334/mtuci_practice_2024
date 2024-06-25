@@ -102,7 +102,8 @@ def index():
     vacancies = cursor.fetchall()
     cursor.close()
     conn.close()
+    print(f"Vacancies fetched from DB: {vacancies}")  # Debug output
     return render_template('index.html', vacancies=vacancies)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=8000, debug=True)

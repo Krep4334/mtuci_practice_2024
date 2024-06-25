@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список вакансий</title>
+</head>
+
+<body>
+    <h1>Список вакансий</h1>
+    <form method="POST">
+        <label for="profession">Профессия:</label>
+        <input type="text" id="profession" name="profession" required>
+        <label for="num_pages">Количество страниц:</label>
+        <input type="number" id="num_pages" name="num_pages" value="5" min="1">
+        <button type="submit">Искать</button>
+    </form>
+    <h2>Результаты поиска</h2>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Описание</th>
+            <th>Требования</th>
+            <th>Зарплата</th>
+            <th>Количество просмотров</th>
+        </tr>
+        {% if vacancies %} {% for vacancy in vacancies %}
+        <tr>
+            <td>{{ vacancy[0] }}</td>
+            <td>{{ vacancy[1] }}</td>
+            <td>{{ vacancy[2] }}</td>
+            <td>{{ vacancy[3] }}</td>
+            <td>{{ vacancy[4] }}</td>
+            <td>{{ vacancy[5] }}</td>
+        </tr>
+        {% endfor %} {% else %}
+        <tr>
+            <td colspan="6">Нет данных</td>
+        </tr>
+        {% endif %}
+    </table>
+</body>
+
+</html>
