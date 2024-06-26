@@ -1,46 +1,114 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Список вакансий</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th,
+        td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
     <h1>Список вакансий</h1>
     <form method="POST">
         <label for="profession">Профессия:</label>
-        <input type="text" id="profession" name="profession" required>
+        <input type="text" id="profession" name="profession">
         <label for="num_pages">Количество страниц:</label>
-        <input type="number" id="num_pages" name="num_pages" value="5" min="1">
+        <input type="number" id="num_pages" name="num_pages" value="5">
         <button type="submit">Искать</button>
     </form>
+
     <h2>Результаты поиска</h2>
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>Название</th>
-            <th>Описание</th>
-            <th>Требования</th>
-            <th>Зарплата</th>
-            <th>Количество просмотров</th>
-        </tr>
-        {% if vacancies %} {% for vacancy in vacancies %}
-        <tr>
-            <td>{{ vacancy[0] }}</td>
-            <td>{{ vacancy[1] }}</td>
-            <td>{{ vacancy[2] }}</td>
-            <td>{{ vacancy[3] }}</td>
-            <td>{{ vacancy[4] }}</td>
-            <td>{{ vacancy[5] }}</td>
-        </tr>
-        {% endfor %} {% else %}
-        <tr>
-            <td colspan="6">Нет данных</td>
-        </tr>
-        {% endif %}
+    <table id="vacanciesTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Название</th>
+                <th>Описание</th>
+                <th>Требования</th>
+                <th id="salaryHeader">Зарплата</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vacancy in vacancies %}
+            <tr>
+                <td>{{ vacancy.id }}</td>
+                <td>{{ vacancy.title }}</td>
+                <td>{{ vacancy.snippet }}</td>
+                <td>{{ vacancy.requirement }}</td>
+                <td>{{ vacancy.salary }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
+    <script>
+        $(document).ready(function() {
+            $('#salaryHeader').click(function() {
+                var vacancies = [];
+                $('#vacanciesTable tbody tr').each(function() {
+                    var row = $(this);
+                    var vacancy = {
+                        id: row.find('td:eq(0)').text(),
+                        title: row.find('td:eq(1)').text(),
+                        snippet: row.find('td:eq(2)').text(),
+                        requirement: row.find('td:eq(3)').text(),
+                        salary: row.find('td:eq(4)').text()
+                    };
+                    vacancies.push(vacancy);
+                });
+
+                var sortBySalary = 'asc';
+                if ($(this).data('sort') === 'asc') {
+                    sortBySalary = 'desc';
+                    $(this).data('sort', 'desc');
+                } else {
+                    sortBySalary = 'asc';
+                    $(this).data('sort', 'asc');
+                }
+
+                $.ajax({
+                    url: '/sort_vacancies',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        vacancies: vacancies,
+                        sort_by_salary: sortBySalary
+                    }),
+                    success: function(sortedVacancies) {
+                        var tbody = $('#vacanciesTable tbody');
+                        tbody.empty();
+                        $.each(sortedVacancies, function(index, vacancy) {
+                            tbody.append(
+                                '<tr>' +
+                                '<td>' + vacancy.id + '</td>' +
+                                '<td>' + vacancy.title + '</td>' +
+                                '<td>' + vacancy.snippet + '</td>' +
+                                '<td>' + vacancy.requirement + '</td>' +
+                                '<td>' + vacancy.salary + '</td>' +
+                                '</tr>'
+                            );
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>
