@@ -138,5 +138,15 @@ def sort_vacancies():
     sorted_vacancies = sorted(vacancies, key=lambda x: salary_to_numeric(x['salary']), reverse=(sort_by_salary == 'desc'))
     return jsonify(sorted_vacancies)
 
+@app.route('/all_vacancies')
+def all_vacancies():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, title, snippet, requirement, salary, url FROM vacancies')
+    vacancies = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return render_template('all_vacancies.html', vacancies=vacancies)
+
 if __name__ == '__main__':
     app.run(debug=True)

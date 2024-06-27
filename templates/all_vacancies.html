@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Список вакансий</title>
+    <title>Вся база вакансий</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         table {
@@ -25,16 +25,8 @@
 </head>
 
 <body>
-    <h1>Список вакансий</h1>
-    <form method="POST">
-        <label for="profession">Профессия:</label>
-        <input type="text" id="profession" name="profession" required>
-        <label for="num_pages">Количество страниц:</label>
-        <input type="number" id="num_pages" name="num_pages" value="5" min="1">
-        <button type="submit">Искать</button>
-    </form>
-    <button onclick="window.location.href='/all_vacancies'">Вся база</button>
-    <h2>Результаты поиска</h2>
+    <h1>Вся база вакансий</h1>
+    <input type="text" id="search" placeholder="Поиск по всем полям">
     <table id="vacanciesTable">
         <thead>
             <tr>
@@ -48,11 +40,11 @@
         <tbody>
             {% for vacancy in vacancies %}
             <tr>
-                <td><a href="{{ vacancy.url }}" target="_blank">{{ vacancy.id }}</a></td>
-                <td>{{ vacancy.title }}</td>
-                <td>{{ vacancy.snippet }}</td>
-                <td>{{ vacancy.requirement }}</td>
-                <td>{{ vacancy.salary }}</td>
+                <td><a href="{{ vacancy[5] }}" target="_blank">{{ vacancy[0] }}</a></td>
+                <td>{{ vacancy[1] }}</td>
+                <td>{{ vacancy[2] }}</td>
+                <td>{{ vacancy[3] }}</td>
+                <td>{{ vacancy[4] }}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -109,6 +101,14 @@
                     error: function(error) {
                         console.error('Ошибка при сортировке:', error);
                     }
+                });
+            });
+
+            // Реализация поиска по всем полям
+            $('#search').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $('#vacanciesTable tbody tr').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
                 });
             });
         });
