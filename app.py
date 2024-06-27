@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, jsonify
 import psycopg2
-from psycopg2 import sql
 import requests
 import re
 
@@ -47,28 +46,42 @@ def parse_vacancies(data):
             'title': clean_text(item['name']),
             'snippet': clean_text(item['snippet'].get('responsibility')),
             'requirement': clean_text(item['snippet'].get('requirement')),
-            'salary': salary_str
+            'salary': salary_str,
+            'url': item['alternate_url']
         }
         vacancies.append(vacancy)
     return vacancies
 
 def save_to_db(vacancies, conn):
     cursor = conn.cursor()
+    # Добавим столбец url в таблицу, если его нет
+    alter_table_query = '''
+    ALTER TABLE vacancies
+    ADD COLUMN IF NOT EXISTS url TEXT
+    '''
+    cursor.execute(alter_table_query)
+    
     create_table_query = '''
     CREATE TABLE IF NOT EXISTS vacancies (
         id VARCHAR(255) PRIMARY KEY,
         title TEXT,
         snippet TEXT,
         requirement TEXT,
-        salary TEXT
+        salary TEXT,
+        url TEXT
     )
     '''
     cursor.execute(create_table_query)
     
     insert_query = '''
-    INSERT INTO vacancies (id, title, snippet, requirement, salary)
-    VALUES (%s, %s, %s, %s, %s)
-    ON CONFLICT (id) DO NOTHING
+    INSERT INTO vacancies (id, title, snippet, requirement, salary, url)
+    VALUES (%s, %s, %s, %s, %s, %s)
+    ON CONFLICT (id) DO UPDATE SET
+    title = EXCLUDED.title,
+    snippet = EXCLUDED.snippet,
+    requirement = EXCLUDED.requirement,
+    salary = EXCLUDED.salary,
+    url = EXCLUDED.url
     '''
     for vacancy in vacancies:
         cursor.execute(insert_query, (
@@ -76,7 +89,8 @@ def save_to_db(vacancies, conn):
             vacancy['title'],
             vacancy['snippet'],
             vacancy['requirement'],
-            vacancy['salary']
+            vacancy['salary'],
+            vacancy['url']
         ))
     
     conn.commit()

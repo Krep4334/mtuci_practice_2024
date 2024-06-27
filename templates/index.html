@@ -28,9 +28,9 @@
     <h1>Список вакансий</h1>
     <form method="POST">
         <label for="profession">Профессия:</label>
-        <input type="text" id="profession" name="profession">
+        <input type="text" id="profession" name="profession" required>
         <label for="num_pages">Количество страниц:</label>
-        <input type="number" id="num_pages" name="num_pages" value="5">
+        <input type="number" id="num_pages" name="num_pages" value="5" min="1">
         <button type="submit">Искать</button>
     </form>
 
@@ -48,7 +48,7 @@
         <tbody>
             {% for vacancy in vacancies %}
             <tr>
-                <td>{{ vacancy.id }}</td>
+                <td><a href="{{ vacancy.url }}" target="_blank">{{ vacancy.id }}</a></td>
                 <td>{{ vacancy.title }}</td>
                 <td>{{ vacancy.snippet }}</td>
                 <td>{{ vacancy.requirement }}</td>
@@ -64,11 +64,12 @@
                 $('#vacanciesTable tbody tr').each(function() {
                     var row = $(this);
                     var vacancy = {
-                        id: row.find('td:eq(0)').text(),
+                        id: row.find('td:eq(0) a').text(),
                         title: row.find('td:eq(1)').text(),
                         snippet: row.find('td:eq(2)').text(),
                         requirement: row.find('td:eq(3)').text(),
-                        salary: row.find('td:eq(4)').text()
+                        salary: row.find('td:eq(4)').text(),
+                        url: row.find('td:eq(0) a').attr('href')
                     };
                     vacancies.push(vacancy);
                 });
@@ -96,7 +97,7 @@
                         $.each(sortedVacancies, function(index, vacancy) {
                             tbody.append(
                                 '<tr>' +
-                                '<td>' + vacancy.id + '</td>' +
+                                '<td><a href="' + vacancy.url + '" target="_blank">' + vacancy.id + '</a></td>' +
                                 '<td>' + vacancy.title + '</td>' +
                                 '<td>' + vacancy.snippet + '</td>' +
                                 '<td>' + vacancy.requirement + '</td>' +
@@ -104,6 +105,9 @@
                                 '</tr>'
                             );
                         });
+                    },
+                    error: function(error) {
+                        console.error('Ошибка при сортировке:', error);
                     }
                 });
             });
