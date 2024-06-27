@@ -21,20 +21,25 @@
         th {
             cursor: pointer;
         }
+        
+        .filter-input {
+            width: 100%;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 
 <body>
     <h1>Вся база вакансий</h1>
-    <input type="text" id="search" placeholder="Поиск по всем полям">
+    <button onclick="window.location.href='/'">Вернуться</button>
     <table id="vacanciesTable">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Название</th>
-                <th>Описание</th>
-                <th>Требования</th>
-                <th id="salaryHeader">Зарплата</th>
+                <th>ID<br><input type="text" class="filter-input" data-column="0"></th>
+                <th>Название<br><input type="text" class="filter-input" data-column="1"></th>
+                <th>Описание<br><input type="text" class="filter-input" data-column="2"></th>
+                <th>Требования<br><input type="text" class="filter-input" data-column="3"></th>
+                <th id="salaryHeader">Зарплата<br><input type="text" class="filter-input" data-column="4"></th>
             </tr>
         </thead>
         <tbody>
@@ -104,11 +109,11 @@
                 });
             });
 
-            // Реализация поиска по всем полям
-            $('#search').on('keyup', function() {
+            $('.filter-input').on('keyup', function() {
+                var column = $(this).data('column');
                 var value = $(this).val().toLowerCase();
                 $('#vacanciesTable tbody tr').filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                    $(this).toggle($(this).find('td').eq(column).text().toLowerCase().indexOf(value) > -1);
                 });
             });
         });

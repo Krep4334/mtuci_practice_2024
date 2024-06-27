@@ -21,6 +21,10 @@
         th {
             cursor: pointer;
         }
+        
+        .sort-arrow {
+            margin-left: 5px;
+        }
     </style>
 </head>
 
@@ -29,7 +33,7 @@
     <form method="POST">
         <label for="profession">Профессия:</label>
         <input type="text" id="profession" name="profession" required>
-        <label for="num_pages">Количество страниц:</label>
+        <label for="num_pages">Количество страниц(20 вакансий - одна страница):</label>
         <input type="number" id="num_pages" name="num_pages" value="5" min="1">
         <button type="submit">Искать</button>
     </form>
@@ -42,7 +46,7 @@
                 <th>Название</th>
                 <th>Описание</th>
                 <th>Требования</th>
-                <th id="salaryHeader">Зарплата</th>
+                <th id="salaryHeader">Зарплата<span class="sort-arrow">⬇️</span></th>
             </tr>
         </thead>
         <tbody>
@@ -78,9 +82,11 @@
                 if ($(this).data('sort') === 'asc') {
                     sortBySalary = 'desc';
                     $(this).data('sort', 'desc');
+                    $('.sort-arrow').text('⬇️');
                 } else {
                     sortBySalary = 'asc';
                     $(this).data('sort', 'asc');
+                    $('.sort-arrow').text('⬆️');
                 }
 
                 $.ajax({
