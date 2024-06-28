@@ -55,8 +55,8 @@ Usage
 Build and run the Docker containers:
 
 ```
-docker-compose build
-docker-compose up
+docker-compose -p myproject build
+docker-compose -p myproject up
 ```
 The application should now be accessible at http://localhost:5000.
 
@@ -68,7 +68,7 @@ Application Endpoints
 Stopping the Containers
 To stop the running containers, use:
 
-```docker-compose down```
+```docker-compose -p myproject down```
 
 Project Files
 - `app.py` - The main Flask application file.
