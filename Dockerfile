@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 # Копируем файлы проекта в рабочую директорию
-COPY . .
+COPY . /app
 
 # Устанавливаем зависимости Python
 RUN pip install --no-cache-dir -r requirements.txt

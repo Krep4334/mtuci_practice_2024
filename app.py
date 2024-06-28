@@ -2,17 +2,27 @@ from flask import Flask, render_template, request, jsonify
 import psycopg2
 import requests
 import re
+import os
 
 app = Flask(__name__)
 
 def get_db_connection():
-    conn = psycopg2.connect(
-        dbname='for_practice',
-        user='krep',
-        password='199129',
-        host='localhost',
-        port='5432'
+    db_url = os.getenv('DATABASE_URL')
+    conn = psycopg2.connect(db_url)
+    create_table_query = '''
+    CREATE TABLE IF NOT EXISTS vacancies (
+        id VARCHAR(255) PRIMARY KEY,
+        title TEXT,
+        snippet TEXT,
+        requirement TEXT,
+        salary TEXT,
+        url TEXT
     )
+    '''
+    cursor = conn.cursor()
+    cursor.execute(create_table_query)
+    conn.commit()
+    cursor.close()
     return conn
 
 def get_vacancies(profession, page=0, per_page=20):
@@ -56,24 +66,6 @@ def parse_vacancies(data):
 
 def save_to_db(vacancies, conn):
     cursor = conn.cursor()
-    # Добавим столбец url в таблицу, если его нет
-    alter_table_query = '''
-    ALTER TABLE vacancies
-    ADD COLUMN IF NOT EXISTS url TEXT
-    '''
-    cursor.execute(alter_table_query)
-    
-    create_table_query = '''
-    CREATE TABLE IF NOT EXISTS vacancies (
-        id VARCHAR(255) PRIMARY KEY,
-        title TEXT,
-        snippet TEXT,
-        requirement TEXT,
-        salary TEXT,
-        url TEXT
-    )
-    '''
-    cursor.execute(create_table_query)
     
     insert_query = '''
     INSERT INTO vacancies (id, title, snippet, requirement, salary, url)
@@ -176,4 +168,4 @@ def all_vacancies():
     return render_template('all_vacancies.html', vacancies=vacancies, vacancy_count=vacancy_count, top_salaries=top_salaries)
 
 if __name__ == '__main__':
-    app.run(port=8000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
