@@ -3,8 +3,10 @@ import psycopg2
 import requests
 import re
 import os
+from flasgger import Swagger
 
 app = Flask(__name__)
+swagger = Swagger(app)
 
 def get_db_connection():
     db_url = os.getenv('DATABASE_URL')
@@ -105,6 +107,42 @@ def salary_to_numeric(salary_str):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    """
+    Main page to search for vacancies
+    ---
+    parameters:
+      - name: profession
+        in: query
+        type: string
+        required: true
+        description: Profession to search for
+      - name: num_pages
+        in: query
+        type: integer
+        required: false
+        default: 5
+        description: Number of pages to fetch
+    responses:
+      200:
+        description: A list of vacancies
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              title:
+                type: string
+              snippet:
+                type: string
+              requirement:
+                type: string
+              salary:
+                type: string
+              url:
+                type: string
+    """
     vacancies = []
     profession = ''
     num_vacancies = 0
@@ -130,6 +168,58 @@ def index():
 
 @app.route('/sort_vacancies', methods=['POST'])
 def sort_vacancies():
+    """
+    Sort vacancies by salary
+    ---
+    parameters:
+      - name: vacancies
+        in: body
+        type: array
+        required: true
+        description: A list of vacancies to sort
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              title:
+                type: string
+              snippet:
+                type: string
+              requirement:
+                type: string
+              salary:
+                type: string
+              url:
+                type: string
+      - name: sort_by_salary
+        in: query
+        type: string
+        required: true
+        description: Sort direction (asc or desc)
+    responses:
+      200:
+        description: A sorted list of vacancies
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              title:
+                type: string
+              snippet:
+                type: string
+              requirement:
+                type: string
+              salary:
+                type: string
+              url:
+                type: string
+    """
     vacancies = request.json['vacancies']
     sort_by_salary = request.json['sort_by_salary']
     sorted_vacancies = sorted(vacancies, key=lambda x: salary_to_numeric(x['salary']), reverse=(sort_by_salary == 'desc'))
@@ -137,6 +227,30 @@ def sort_vacancies():
 
 @app.route('/all_vacancies')
 def all_vacancies():
+    """
+    Display all vacancies from the database
+    ---
+    responses:
+      200:
+        description: A list of all vacancies
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              title:
+                type: string
+              snippet:
+                type: string
+              requirement:
+                type: string
+              salary:
+                type: string
+              url:
+                type: string
+    """
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('SELECT id, title, snippet, requirement, salary, url FROM vacancies')
