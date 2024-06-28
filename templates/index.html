@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Список вакансий</title>
+    <title>Поиск вакансий</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         table {
@@ -29,11 +29,11 @@
 </head>
 
 <body>
-    <h1>Список вакансий</h1>
+    <h1>Поиск вакансий</h1>
     <form method="POST">
         <label for="profession">Профессия:</label>
         <input type="text" id="profession" name="profession" required>
-        <label for="num_pages">Количество страниц(20 вакансий - одна страница):</label>
+        <label for="num_pages">Количество страниц(20 вакансий - 1 страница):</label>
         <input type="number" id="num_pages" name="num_pages" value="5" min="1">
         <button type="submit">Искать</button>
     </form>

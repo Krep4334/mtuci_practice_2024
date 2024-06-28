@@ -37,6 +37,8 @@ def parse_vacancies(data):
     for item in data['items']:
         salary = item['salary']
         if salary:
+            if salary['currency'] != 'RUR' and salary['currency']:
+                continue
             salary_str = f"{salary['from']}-{salary['to']} {salary['currency']}" if salary['from'] and salary['to'] else salary['from'] if salary['from'] else salary['to']
         else:
             salary_str = 'Не указана'
@@ -102,7 +104,10 @@ def salary_to_numeric(salary_str):
     if salary_str == 'Не указана':
         return 0
     try:
-        return int(salary_str.split('-')[0].strip())
+        parts = salary_str.split('-')
+        if len(parts) == 2:
+            return (int(parts[0].strip()) + int(parts[1].strip())) // 2
+        return int(parts[0].strip())
     except (ValueError, IndexError):
         return 0
 
@@ -144,9 +149,31 @@ def all_vacancies():
     cursor = conn.cursor()
     cursor.execute('SELECT id, title, snippet, requirement, salary, url FROM vacancies')
     vacancies = cursor.fetchall()
+    
+    cursor.execute('SELECT COUNT(*) FROM vacancies')
+    vacancy_count = cursor.fetchone()[0]
+
+    cursor.execute('''
+    SELECT title, ROUND(AVG(
+        CASE 
+            WHEN position('-' in salary) > 0 THEN
+                (CAST(substring(salary, '(\d+)-') AS bigint) + CAST(substring(salary, '-(\d+)') AS bigint)) / 2
+            ELSE CAST(REGEXP_REPLACE(salary, '[^0-9]', '', 'g') AS bigint)
+        END
+    )) AS average_salary
+    FROM vacancies
+    WHERE salary <> 'Не указана' AND salary LIKE '%RUR%'
+    GROUP BY title
+    ORDER BY average_salary DESC
+    LIMIT 3
+    ''')
+    top_salaries = cursor.fetchall()
+
+    top_salaries = [{'name': row[0], 'average_salary': int(row[1])} for row in top_salaries]
+
     cursor.close()
     conn.close()
-    return render_template('all_vacancies.html', vacancies=vacancies)
+    return render_template('all_vacancies.html', vacancies=vacancies, vacancy_count=vacancy_count, top_salaries=top_salaries)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=8000, debug=True)

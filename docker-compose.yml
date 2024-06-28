@@ -1,0 +1,29 @@
+version: '3.8'
+
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:5000"
+    depends_on:
+      - db
+    environment:
+      FLASK_ENV: development
+      DATABASE_URL: postgres://krep:199129@db:5432/for_practice
+    volumes:
+      - .:/app
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: for_practice
+      POSTGRES_USER: krep
+      POSTGRES_PASSWORD: 199129
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

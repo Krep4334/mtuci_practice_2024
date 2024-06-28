@@ -26,12 +26,39 @@
             width: 100%;
             box-sizing: border-box;
         }
+        
+        .header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .vacancy-count {
+            margin-right: 20px;
+        }
+        
+        .top-salaries {
+            text-align: right;
+        }
     </style>
 </head>
 
 <body>
     <h1>Вся база вакансий</h1>
-    <button onclick="window.location.href='/'">Вернуться</button>
+    <div class="header-info">
+        <button onclick="window.location.href='/'">Вернуться</button>
+        <div class="vacancy-count">
+            Вакансий в базе: {{ vacancy_count }}
+        </div>
+        <div class="top-salaries">
+            <h4>Топ-3 профессии по зарплате в бд:</h4>
+            <ol>
+                {% for profession in top_salaries %}
+                <li>{{ profession.name }} - {{ profession.average_salary }}</li>
+                {% endfor %}
+            </ol>
+        </div>
+    </div>
     <table id="vacanciesTable">
         <thead>
             <tr>
