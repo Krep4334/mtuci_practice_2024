@@ -61,6 +61,7 @@ docker-compose -p myproject up
 The application should now be accessible at http://localhost:5000.
 
 Application Endpoints
+
 `/` - The main page where you can search for vacancies.
 
 `/sort_vacancies` - Endpoint for sorting vacancies.
