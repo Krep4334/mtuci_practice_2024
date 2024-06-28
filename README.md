@@ -62,8 +62,11 @@ The application should now be accessible at http://localhost:5000.
 
 Application Endpoints
 `/` - The main page where you can search for vacancies.
+
 `/sort_vacancies` - Endpoint for sorting vacancies.
+
 `/all_vacancies` - Page displaying all vacancies stored in the database.
+
 `/apidocs` - Swagger page for testing
 
 Stopping the Containers
