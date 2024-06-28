@@ -81,4 +81,4 @@ Project Files
 - `docker-compose.yml` - Docker Compose configuration file for setting up the Flask and PostgreSQL services.
 - `requirements.txt` - File listing Python dependencies.
 - `templates/` - Directory containing HTML templates for the web application.
-
+- `README.md` - Users manual
