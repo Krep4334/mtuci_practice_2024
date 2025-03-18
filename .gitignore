@@ -1,0 +1,45 @@
+# Игнорируем виртуальные среды
+venv/
+env/
+.venv/
+.env/
+
+# Кэш pip
+__pycache__/
+*.pyc
+*.pyo
+
+# Кэш pytest
+.cache/
+
+# Логи
+*.log
+
+# Файлы временной сборки
+*.egg-info/
+*.dist-info/
+
+# Папка с зависимостями из pipenv или poetry (если используете)
+Pipfile.lock
+poetry.lock
+
+# Папки IDE (например, PyCharm, VSCode)
+.idea/
+.vscode/
+
+# Тестовые результаты
+nosetests.xml
+coverage.xml
+*.cover
+*.tox/
+*.nox/
+*.coverage
+
+# Docker
+*.dockerfile
+.dockerignore
+docker-compose.override.yml
+
+# Операционные системы
+.DS_Store
+Thumbs.db
