@@ -36,7 +36,7 @@ services:
     volumes:
       - .:/app
     command: pytest  # Запускаем тесты
-    entrypoint: ["pytest", "--maxfail=1", "--disable-warnings", "-q"]  # Параметры для pytest
+    entrypoint: ["pytest", "test_app.py", "--maxfail=1", "--disable-warnings", "-q"]  # Указываем конкретный файл с тестами
 
 volumes:
   postgres_data:

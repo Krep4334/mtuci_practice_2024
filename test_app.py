@@ -4,7 +4,7 @@ import os
 
 # Фикстура для тестового клиента Flask
 @pytest.fixture
-def client():
+def test_client():
     app.config['TESTING'] = True
     app.config['DATABASE_URL'] = "postgresql://user:password@localhost/test_db"  # используем тестовую базу данных
     with app.test_client() as client:
@@ -12,7 +12,7 @@ def client():
 
 # Фикстура для подключения к базе данных
 @pytest.fixture
-def db_connection():
+def test_db_connection():
     conn = get_db_connection()
     yield conn
     conn.close()
