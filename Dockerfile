@@ -16,5 +16,8 @@ COPY . /app
 # Устанавливаем зависимости Python
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Указываем команду для запуска приложения
-CMD ["python", "app.py"]
+# Устанавливаем зависимости для тестирования
+RUN pip install --no-cache-dir pytest pytest-flask
+
+# Команда для запуска тестов с использованием pytest
+CMD ["pytest", "--maxfail=1", "--disable-warnings", "-q"]
