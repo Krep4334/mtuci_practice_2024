@@ -58,7 +58,7 @@ Build and run the Docker containers:
 docker-compose -p myproject build
 docker-compose -p myproject up
 ```
-The application should now be accessible at http://localhost:5000.
+The application should now be accessible at http://localhost:5001.
 
 Application Endpoints
 
