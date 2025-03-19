@@ -12,7 +12,7 @@ services:
       DATABASE_URL: postgres://krep:199129@db:5432/for_practice
     volumes:
       - .:/app
-    command: flask run --host=0.0.0.0 --port=5000  # запускаем flask на нужном порту
+    command: flask run --host=0.0.0.0 --port=5000
 
   db:
     image: postgres:13
@@ -25,7 +25,6 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  # Сервис для тестов
   test:
     build: .
     depends_on:
@@ -35,8 +34,7 @@ services:
       DATABASE_URL: postgres://krep:199129@db:5432/for_practice
     volumes:
       - .:/app
-    command: pytest  # Запускаем тесты
-    entrypoint: ["pytest", "test_app.py", "--maxfail=1", "--disable-warnings", "-q"]  # Указываем конкретный файл с тестами
+    command: ["pytest", "test_app.py", "--maxfail=1", "--disable-warnings", "-q"]
 
 volumes:
   postgres_data:

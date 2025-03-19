@@ -3,6 +3,7 @@ FROM python:3.12-slim
 
 # Устанавливаем зависимости системы
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    bash \
     build-essential \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
